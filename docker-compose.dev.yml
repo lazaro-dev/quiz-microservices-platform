@@ -14,13 +14,18 @@ services:
       - quiz-network
 
   user-service:
-      build: ./services/user-service-spring
+      build: 
+        context: ./services/user-service-spring
+        dockerfile: Dockerfile.dev
       ports:
         - "8082:8080"
       depends_on:
         - postgres
       networks:
         - quiz-network
+      volumes:
+      - ./services/user-service-spring:/app
+      - ./services/user-service-spring/.m2:/root/.m2
 
   redis:
     image: redis:7
