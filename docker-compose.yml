@@ -21,6 +21,8 @@ services:
         - postgres
       networks:
         - quiz-network
+      environment:
+        INTERNAL_API_KEY: super-secret-key
 
   redis:
     image: redis:7

@@ -24,8 +24,10 @@ services:
       networks:
         - quiz-network
       volumes:
-      - ./services/user-service-spring:/app
-      - ./services/user-service-spring/.m2:/root/.m2
+        - ./services/user-service-spring:/app
+        - ./services/user-service-spring/.m2:/root/.m2
+      environment:
+        INTERNAL_API_KEY: super-secret-key
 
   redis:
     image: redis:7
