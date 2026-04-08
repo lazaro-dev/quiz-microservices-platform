@@ -13,6 +13,19 @@ services:
     networks:
       - quiz-network
 
+  auth-service:
+    build:
+      context: ./services/auth-service-go
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    restart: always
+    networks:
+      - quiz-network
+    environment:
+        JWT_SECRET: 282356f935fffe4c3ec36e497253bbce296df4e6a28a00ff23fc3b164dae0933
+        INTERNAL_API_KEY: 78db15c171745baa4c39fac59eba4117e76b3cab5446618ca2524866ccf03ce8
+        
   user-service:
       build: ./services/user-service-spring
       ports:
@@ -22,7 +35,8 @@ services:
       networks:
         - quiz-network
       environment:
-        INTERNAL_API_KEY: super-secret-key
+        JWT_SECRET: 282356f935fffe4c3ec36e497253bbce296df4e6a28a00ff23fc3b164dae0933
+        INTERNAL_API_KEY: 78db15c171745baa4c39fac59eba4117e76b3cab5446618ca2524866ccf03ce8
 
   redis:
     image: redis:7
@@ -51,13 +65,6 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
-  adminer:
-    image: adminer
-    ports:
-      - "8081:8080"
-    networks:
-      - quiz-network
-      
 networks:
   quiz-network:
     driver: bridge

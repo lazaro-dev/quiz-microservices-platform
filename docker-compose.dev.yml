@@ -9,9 +9,25 @@ services:
     volumes:
       - ./infrastructure/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
+      - auth-service
       - user-service
     networks:
       - quiz-network
+  
+  auth-service:
+    build:
+      context: ./services/auth-service-go
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./services/auth-service-go:/app
+    ports:
+      - "8081:8080"
+    networks:
+      - quiz-network
+    environment:
+        USER_SERVICE_URL: http://user-service:8080
+        JWT_SECRET: 282356f935fffe4c3ec36e497253bbce296df4e6a28a00ff23fc3b164dae0933
+        INTERNAL_API_KEY: 78db15c171745baa4c39fac59eba4117e76b3cab5446618ca2524866ccf03ce8
 
   user-service:
       build: 
@@ -27,7 +43,8 @@ services:
         - ./services/user-service-spring:/app
         - ./services/user-service-spring/.m2:/root/.m2
       environment:
-        INTERNAL_API_KEY: super-secret-key
+        JWT_SECRET: 282356f935fffe4c3ec36e497253bbce296df4e6a28a00ff23fc3b164dae0933
+        INTERNAL_API_KEY: 78db15c171745baa4c39fac59eba4117e76b3cab5446618ca2524866ccf03ce8
 
   redis:
     image: redis:7
@@ -59,7 +76,7 @@ services:
   adminer:
     image: adminer
     ports:
-      - "8081:8080"
+      - "9090:8080"
     networks:
       - quiz-network
       
