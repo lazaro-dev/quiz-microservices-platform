@@ -86,7 +86,11 @@ public class UserService {
                 user.getCreatedAt());
     }
 
-    public UserDTO updateUser(Long id, UpdateUserDTO data) {
+    public UserDTO updateUser(Long id, UpdateUserDTO data, String role) {
+
+        if (!role.contains("ADMIN")) {
+            throw new UserForbiddenException();
+        }
 
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException());
@@ -99,7 +103,7 @@ public class UserService {
             if (userRepository.existsByEmailAndIdNot(data.email(), id)) {
                 throw new EmailAlreadyExistsException();
             }
-            
+
             user.setEmail(data.email());
         }
 
@@ -130,4 +134,29 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    public UserDTO updateMe(Long id, UpdateUserDTO data) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        if (data.username() != null) {
+            user.setUsername(data.username());
+        }
+
+        if (data.email() != null) {
+            if (userRepository.existsByEmailAndIdNot(data.email(), id)) {
+                throw new EmailAlreadyExistsException();
+            }
+
+            user.setEmail(data.email());
+        }
+
+        userRepository.save(user);
+
+        return new UserDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole().name(),
+                user.getCreatedAt());
+    }
 }
