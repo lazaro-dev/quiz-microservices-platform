@@ -11,6 +11,7 @@ services:
     depends_on:
       - auth-service
       - user-service
+      - quiz-service
     networks:
       - quiz-network
   
@@ -36,7 +37,8 @@ services:
       ports:
         - "8082:8080"
       depends_on:
-        - postgres
+        postgres:
+          condition: service_started
       networks:
         - quiz-network
       volumes:
@@ -45,6 +47,28 @@ services:
       environment:
         JWT_SECRET: 282356f935fffe4c3ec36e497253bbce296df4e6a28a00ff23fc3b164dae0933
         INTERNAL_API_KEY: 78db15c171745baa4c39fac59eba4117e76b3cab5446618ca2524866ccf03ce8
+
+  quiz-service:
+    build:
+      context: .
+      dockerfile: services/quiz-service-laravel/Dockerfile.dev
+    volumes:
+      - ./services/quiz-service-laravel:/var/www
+      - laravel-vendor:/var/www/vendor
+      - laravel-storage:/var/www/storage
+    ports:
+      - "8083:8080"
+    environment:
+      APP_ENV: local
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: admin
+    depends_on:
+      postgres:
+        condition: service_started
+    command: php artisan serve --host=0.0.0.0 --port=8080
+    networks:
+      - quiz-network
 
   redis:
     image: redis:7
@@ -72,6 +96,8 @@ services:
       - quiz-network
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./infrastructure/scripts/init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh
+    # entrypoint: ["sh", "/init.sh"]
 
   adminer:
     image: adminer
@@ -87,3 +113,5 @@ networks:
 volumes:
   postgres-data:
   rabbitmq-data:
+  laravel-vendor:
+  laravel-storage:
