@@ -63,6 +63,8 @@ services:
       DB_HOST: postgres
       DB_PORT: 5432
       DB_USERNAME: admin
+      JWT_SECRET: 282356f935fffe4c3ec36e497253bbce296df4e6a28a00ff23fc3b164dae0933
+      INTERNAL_API_KEY: 78db15c171745baa4c39fac59eba4117e76b3cab5446618ca2524866ccf03ce8
     depends_on:
       postgres:
         condition: service_started

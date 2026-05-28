@@ -31,6 +31,10 @@ done
 # Rodar migrations
 echo "Rodando migrations..."
 php artisan migrate --force || true
+# php artisan config:clear
+# php artisan cache:clear
+
+# php artisan config:cache
 
 echo "Inicialização concluída"
 

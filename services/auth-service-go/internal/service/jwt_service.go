@@ -35,6 +35,7 @@ func (j *JWTService) Generate(user *model.UserWithPassword) (string, error) {
 		"sub":      fmt.Sprint(user.ID),
 		"username": user.Username,
 		"role":     user.Role,
+		"iat":      time.Now().Unix(),
 		"exp":      time.Now().Add(time.Hour * 24).Unix(),
 	}
 
