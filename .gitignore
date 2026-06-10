@@ -1,7 +1,7 @@
 node_modules
 vendor
 .env
-.env.*
+# .env.*
 *.log
 dist
 build

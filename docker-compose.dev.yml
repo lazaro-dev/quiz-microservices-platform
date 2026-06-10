@@ -12,6 +12,7 @@ services:
       - auth-service
       - user-service
       - quiz-service
+      - realtime-service
     networks:
       - quiz-network
   
@@ -72,19 +73,80 @@ services:
     networks:
       - quiz-network
 
+  realtime-service:
+    build:
+      context: ./services/realtime-service-node
+      dockerfile: Dockerfile.dev
+    container_name: realtime-service
+    restart: unless-stopped
+    ports:
+      - "8084:8080"
+    volumes:
+      - ./services/realtime-service-node:/app
+      - /app/node_modules
+    environment:
+      PORT: 8080 
+      REDIS_HOST: redis 
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+      RABBITMQ_URL: amqp://admin:admin@rabbitmq:5672
+      CHOKIDAR_USEPOLLING: "true"
+      JWT_SECRET: 282356f935fffe4c3ec36e497253bbce296df4e6a28a00ff23fc3b164dae0933
+    depends_on:
+      rabbitmq: 
+        condition: service_healthy 
+      redis: 
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/realtime/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - quiz-network
+
   redis:
-    image: redis:7
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --appendonly yes
+      --save 60 1000
+      --loglevel warning
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - quiz-network
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    restart: unless-stopped
+    hostname: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+      RABBITMQ_DEFAULT_VHOST: /
     ports:
+      - "5672:5672"
       - "15672:15672"
-    networks:
-      - quiz-network
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - quiz-network
 
   postgres:
     image: postgres:15
@@ -115,5 +177,6 @@ networks:
 volumes:
   postgres-data:
   rabbitmq-data:
+  redis-data:
   laravel-vendor:
   laravel-storage:
