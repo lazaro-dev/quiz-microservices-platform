@@ -5,16 +5,27 @@ import { QuizFinishedEvent } from "@/shared/contracts/events/QuizFinishedEvent";
 import { LeaderboardKeys } from "../constants/LeaderboardKeys";
 import { LeaderboardPlayerDto } from "../dto/LeaderboardPlayerDto";
 import { LeaderboardUserMetadata } from "../types/LeaderboardUserMetadata";
+import { logger } from "@/config/Logger";
 
 export class LeaderboardRepository {
 
     private readonly redis;
 
-    constructor(
-        redisClient: RedisClient
-    ) {
-        this.redis =
-            redisClient.getInstance();
+    constructor(redisClient: RedisClient) {
+        this.redis = redisClient.getInstance();
+    }
+
+    public async markEventProcessed(eventId: string): Promise<boolean> {
+
+        const result = await this.redis.set(
+            LeaderboardKeys.processedEvent(eventId),
+            "1",
+            "EX",
+            86400,
+            "NX"
+        );
+
+        return result === "OK";
     }
 
     public async saveUser(event: QuizFinishedEvent): Promise<void> {
@@ -29,27 +40,61 @@ export class LeaderboardRepository {
         );
     }
 
-    public async updateQuizScore(
-        event: QuizFinishedEvent
-    ): Promise<void> {
+    public async updateQuizScore(event: QuizFinishedEvent): Promise<boolean> {
 
-        await this.redis.zadd(
-            LeaderboardKeys.quiz(
-                event.quizId
-            ),
-            event.score,
+        const currentScore = await this.redis.zscore(
+            LeaderboardKeys.quiz(event.quizId),
             String(event.userId)
         );
+
+        if (
+            currentScore === null ||
+            event.score > Number(currentScore)
+        ) {
+            await this.redis.zadd(
+                LeaderboardKeys.quiz(event.quizId),
+                event.score,
+                String(event.userId)
+            );
+
+            logger.info(
+                {
+                    quizId: event.quizId,
+                    userId: event.userId,
+                    score: event.score,
+                },
+                "Leaderboard atualizado"
+            );
+
+            return true;
+        }
+
+        logger.info(
+            {
+                quizId: event.quizId,
+                userId: event.userId,
+                score: event.score,
+                currentScore: Number(currentScore),
+            },
+            "Score ignorado pois é menor que o atual"
+        );
+
+        return false;
     }
 
-    public async updateGlobalScore(
-        event: QuizFinishedEvent
-    ): Promise<void> {
+    public async updateGlobalScore(event: QuizFinishedEvent): Promise<void> {
 
         await this.redis.zincrby(
             LeaderboardKeys.global(),
             event.score,
             String(event.userId)
+        );
+
+        logger.info(
+            {
+                quizId: event.quizId,
+            },
+            "Leaderboard global updated"
         );
     }
 
@@ -145,9 +190,7 @@ export class LeaderboardRepository {
 
             const user = metadata
                 ? JSON.parse(metadata)
-                : {
-                    username: "Unknown",
-                };
+                : { username: "Unknown", avatar: null };
 
             players.push({
                 userId: userIds[i],

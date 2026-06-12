@@ -35,6 +35,7 @@ export class LeaderboardSocketHandler {
                         {
                             quizId,
                             players: leaderboard,
+                            updatedAt: Date.now(),
                         }
                     );
                 }

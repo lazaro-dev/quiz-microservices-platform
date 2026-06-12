@@ -13,30 +13,39 @@ export class LeaderboardService {
 
     public async processScore(event: QuizFinishedEvent): Promise<void> {
 
+        const isNew = await this.repository
+            .markEventProcessed(
+                event.eventId
+            );
+
+        if (!isNew) {
+            return;
+        }
+
         await this.repository.saveUser(event);
 
-        await this.repository.updateQuizScore(event);
+        const updated = await this.repository.updateQuizScore(event);
 
         await this.repository.updateGlobalScore(event);
 
-        const players = await this.repository.getLeaderboard(
-            event.quizId
-        );
+        if (updated) {
+            const players = await this.repository.getLeaderboard(event.quizId);
 
-        this.gateway.emitLeaderboardUpdated(
-            event.quizId,
-            {
-                quizId:
-                    event.quizId,
-
-                players,
-            }
-        );
+            this.gateway.emitLeaderboardUpdated(
+                event.quizId,
+                {
+                    quizId: event.quizId,
+                    players,
+                    updatedAt: Date.now(),
+                }
+            );
+        }
 
         const globalPlayers = await this.repository.getGlobalLeaderboard();
 
         this.gateway.emitGlobalLeaderboardUpdated({
             players: globalPlayers,
+            updatedAt: Date.now(),
         });
     }
 

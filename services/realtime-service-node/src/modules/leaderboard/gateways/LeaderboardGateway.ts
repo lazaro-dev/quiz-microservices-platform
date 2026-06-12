@@ -16,7 +16,7 @@ export class LeaderboardGateway {
             );
     }
 
-    public emitGlobalLeaderboardUpdated(payload: { players: LeaderboardPlayerDto[]; }): void {
+    public emitGlobalLeaderboardUpdated(payload: { players: LeaderboardPlayerDto[]; updatedAt: Number, }): void {
         this.io
             .to(
                 SocketRooms.globalLeaderboard()

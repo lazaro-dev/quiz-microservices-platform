@@ -10,4 +10,8 @@ export class LeaderboardKeys {
     public static users(): string {
         return "leaderboard:users";
     }
+    
+    static processedEvent(eventId: string): string {
+        return `leaderboard:event:${eventId}`;
+    }
 }

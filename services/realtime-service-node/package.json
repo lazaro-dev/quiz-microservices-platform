@@ -7,10 +7,10 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:integration": "jest src/tests/integration"
+    "test": "jest --maxWorkers=1",
+    "test:watch": "jest --watch --maxWorkers=1",
+    "test:coverage": "jest --coverage --maxWorkers=1",
+    "test:integration": "jest src/tests/integration --maxWorkers=1"
   },
   "keywords": [],
   "author": "",
