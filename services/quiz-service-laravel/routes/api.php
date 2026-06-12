@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 //     });
 // });
 
-Route::group(['middleware' => ['jwt'], 'prefix' => 'quizzes'], function () {
+Route::group(['prefix' => 'quizzes'], function () {
 
     // Route::get('/me', function (Request $request) {
     //     return [
@@ -36,7 +36,7 @@ Route::group(['middleware' => ['jwt'], 'prefix' => 'quizzes'], function () {
         Route::get('/quizzes/{id}', [PublicOpen\QuizController::class, 'show']);
     });
 
-    Route::group(['prefix' => 'common'], function () {
+    Route::group(['middleware' => ['jwt'], 'prefix' => 'common'], function () {
         Route::get('/my-attempts', [Common\QuizAttemptController::class, 'myAttempts']);
         Route::get('//my-attempts/{quiz}', [Common\QuizAttemptController::class, 'myQuizAttempts']);
         Route::get('/attempts/{attempt}', [Common\QuizAttemptController::class, 'show']);
@@ -51,7 +51,7 @@ Route::group(['middleware' => ['jwt'], 'prefix' => 'quizzes'], function () {
         Route::get('/quizzes/{quiz}/comments', [Common\CommentController::class, 'index']);
     });
 
-    Route::group(['middleware' => ['is.admin'], 'prefix' => 'admin'], function () {
+    Route::group(['middleware' => ['jwt', 'is.admin'], 'prefix' => 'admin'], function () {
         Route::apiResource('quizzes', Admin\QuizController::class);
         Route::apiResource('games', Admin\GameController::class);
         Route::apiResource('game-types', Admin\GameTypeController::class);

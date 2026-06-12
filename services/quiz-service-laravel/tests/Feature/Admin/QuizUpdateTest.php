@@ -3,6 +3,10 @@
 use App\Models\Game;
 use App\Models\Quiz;
 
+// it('debug env', function () {
+//     dump(app()->environment());
+//     dump(app()->runningUnitTests());
+// });
 
 it('Admin deve poder atualizar um quiz', function () {
     $prefix = '/quizzes/admin/quizzes';
@@ -30,6 +34,7 @@ it('Admin deve poder atualizar um quiz', function () {
                 [
                     'question_text' => 'Question',
                     'order' => 1,
+                    'weight' => 1,
                     'options' => [
                         [
                             'option_text' => 'Correct',
@@ -44,6 +49,12 @@ it('Admin deve poder atualizar um quiz', function () {
             ]
         ]
     );
+
+    // dd(
+    //     $response->status(),
+    //     $response->json(),
+    //     $response->content()
+    // );
 
     $response->assertStatus(200);
 
@@ -79,6 +90,7 @@ it('Questões devem ter apenas uma resposta correta', function () {
                 [
                     'question_text' => 'Question',
                     'order' => 1,
+                    'weight' => 1,
                     'options' => [
                         [
                             'option_text' => '1',

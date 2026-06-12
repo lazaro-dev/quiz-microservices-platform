@@ -1,11 +1,22 @@
 <?php
 
+use App\Contracts\EventPublisher;
 use App\Models\Game;
 use App\Models\Option;
 use App\Models\Question;
 use App\Models\Quiz;
 
 it('Deve poder responder um quiz', function () {
+    $publisher = Mockery::mock(EventPublisher::class);
+
+    $publisher->shouldReceive('publish')
+        ->once()
+        ->andReturnNull();
+
+    app()->instance(
+        EventPublisher::class,
+        $publisher
+    );
 
     $game = Game::factory()->create();
 
@@ -16,7 +27,8 @@ it('Deve poder responder um quiz', function () {
     ]);
 
     $question = Question::factory()->create([
-        'quiz_id' => $quiz->id
+        'quiz_id' => $quiz->id,
+        'weight' => 5,
     ]);
 
     $correctOption = Option::factory()->create([
@@ -49,9 +61,12 @@ it('Deve poder responder um quiz', function () {
     $response->assertStatus(200)
         ->assertJson([
             'correct_answers' => 1,
-            'score' => 100,
+            'accuracy' => 100,
+            'earned_points' => 5,
+            'total_points' => 5,
+            'score' => 500,
             'time_seconds' => 30,
-            'total_questions' => 1
+            'total_questions' => 1,
         ]);
 
     $this->assertDatabaseHas(
@@ -59,7 +74,7 @@ it('Deve poder responder um quiz', function () {
         [
             'quiz_id' => $quiz->id,
             'user_id' => 1,
-            'score' => 100
+            'correct_answers' => 1
         ]
     );
 
