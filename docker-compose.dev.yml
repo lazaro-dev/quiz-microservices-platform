@@ -44,10 +44,17 @@ services:
         - quiz-network
       volumes:
         - ./services/user-service-spring:/app
-        - ./services/user-service-spring/.m2:/root/.m2
+        - maven-cache:/root/.m2
+        - user-service-target:/app/target
       environment:
         JWT_SECRET: 282356f935fffe4c3ec36e497253bbce296df4e6a28a00ff23fc3b164dae0933
         INTERNAL_API_KEY: 78db15c171745baa4c39fac59eba4117e76b3cab5446618ca2524866ccf03ce8
+        SPRING_DEVTOOLS_RESTART_ENABLED: false
+      healthcheck:
+        test: ["CMD", "wget", "-qO-", "http://localhost:8080/users/health"]
+        interval: 10s
+        timeout: 5s
+        retries: 10
 
   quiz-service:
     build:
@@ -161,7 +168,11 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./infrastructure/scripts/init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh
-    # entrypoint: ["sh", "/init.sh"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
   adminer:
     image: adminer
@@ -180,3 +191,5 @@ volumes:
   redis-data:
   laravel-vendor:
   laravel-storage:
+  user-service-target:
+  maven-cache:
