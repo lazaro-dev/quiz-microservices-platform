@@ -2,22 +2,35 @@
 
 namespace App\Services\Common;
 
+use App\Contracts\EventPublisher;
+use App\Contracts\Events\QuizFinishedEvent;
 use App\DTO\Common\QuizAttemptDTO;
 use App\Exceptions\InvalidAnswerException;
+use App\Infrastructure\RabbitMQ\RabbitMQTopology;
 use App\Models\AttemptAnswer;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Support\AuthUser;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Illuminate\Support\Str;
 
 class QuizAttemptService
 {
+    public function __construct(private EventPublisher $publisher) {}
+
     public function store(QuizAttemptDTO $dto)
     {
         $quiz = Quiz::with('questions.options')
             ->findOrFail($dto->quiz_id);
 
         $questions = $quiz->questions;
+
+
+        if ($questions->isEmpty()) {
+            throw new \Exception(
+                'Quiz sem perguntas'
+            );
+        }
 
         $validQuestionIds = $questions->pluck('id');
 
@@ -28,12 +41,14 @@ class QuizAttemptService
         }
 
         $correct = 0;
+        $earnedPoints = 0;
 
         $attempt = QuizAttempt::create([
             'user_id' => $dto->user_id,
             'quiz_id' => $quiz->id,
             'username' => $dto->username,
             'score' => 0,
+            'accuracy' => 0,
             'total_questions' => $questions->count(),
             'correct_answers' => 0,
             'time_seconds' => $dto->time_seconds
@@ -49,7 +64,11 @@ class QuizAttemptService
 
             $isCorrect = $option->is_correct;
 
-            if ($isCorrect) $correct++;
+            if ($isCorrect) {
+                $correct++;
+
+                $earnedPoints += $question->weight;
+            }
 
             AttemptAnswer::create([
                 'quiz_attempt_id' => $attempt->id,
@@ -59,20 +78,69 @@ class QuizAttemptService
             ]);
         }
 
-        $score = ($correct / $questions->count()) * 100;
+        if ($questions->sum('weight') <= 0) {
+            throw new \Exception(
+                'Quiz com pesos inválidos'
+            );
+        }
+
+        $totalPossiblePoints =  $questions->sum('weight');
+
+        $accuracy =  ($earnedPoints / $totalPossiblePoints) * 100;
+
+        $expectedTime = $questions->count() * 30;
+
+        //Penalidade max por tempo 25%
+        //Bônus max por tempo 25%
+        $timeMultiplier = min(
+            1.25,
+            max(
+                0.75,
+                sqrt(
+                    $expectedTime /
+                        max(1, $dto->time_seconds)
+                )
+            )
+        );
+
+        $rankingScore = round(
+            $earnedPoints
+                * 100
+                * $timeMultiplier
+        );
 
         $attempt->update([
-            'score' => $score,
+            'score' => $rankingScore,
+            'accuracy' => round($accuracy, 2),
             'correct_answers' => $correct
         ]);
 
         $quiz->increment('plays_count');
 
+        $event = new QuizFinishedEvent(
+            eventId: Str::uuid()->toString(),
+            quizId: $quiz->id,
+            userId: $dto->user_id,
+            username: $dto->username,
+            avatar: $dto->avatar,
+            score: $rankingScore,
+            completedAt: now()->toISOString(),
+        );
+
+        $this->publisher->publish(
+            RabbitMQTopology::QUIZ_EVENTS_EXCHANGE,
+            RabbitMQTopology::QUIZ_FINISHED_ROUTING_KEY,
+            $event->toArray()
+        );
+
         return [
-            'score' => round($score, 2),
+            'score' => $rankingScore,
+            'accuracy' => round($accuracy, 2),
             'correct_answers' => $correct,
             'total_questions' => $questions->count(),
-            'time_seconds' => $dto->time_seconds
+            'earned_points' => $earnedPoints,
+            'total_points' => $totalPossiblePoints,
+            'time_seconds' => $dto->time_seconds,
         ];
     }
 

@@ -43,6 +43,12 @@ class SaveQuizRequest extends FormRequest
                 'integer',
                 'min:1'
             ],
+            'questions.*.weight' => [
+                'required',
+                'integer',
+                'min:1',
+                'max:5'
+            ],
             'questions.*.options' => [
                 'required',
                 'array',

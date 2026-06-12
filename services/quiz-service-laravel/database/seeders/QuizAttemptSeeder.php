@@ -16,7 +16,7 @@ class QuizAttemptSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::all();
+        $users = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         $quizzes = Quiz::with('questions.options')->get();
 
         foreach ($users as $user) {
@@ -25,9 +25,11 @@ class QuizAttemptSeeder extends Seeder
                 $correct = 0;
 
                 $attempt = QuizAttempt::create([
-                    'user_id' => $user->id,
+                    'user_id' => $user,
                     'quiz_id' => $quiz->id,
+                    'username' => "user_{$user}",
                     'score' => 0,
+                    'accuracy' => 0,
                     'total_questions' => $quiz->questions->count(),
                     'correct_answers' => 0,
                     'time_seconds' => rand(30, 300)
@@ -51,7 +53,7 @@ class QuizAttemptSeeder extends Seeder
                 $score = ($correct / $quiz->questions->count()) * 100;
 
                 $attempt->update([
-                    'score' => $score,
+                    'score' => round($score, 0),
                     'correct_answers' => $correct
                 ]);
             }

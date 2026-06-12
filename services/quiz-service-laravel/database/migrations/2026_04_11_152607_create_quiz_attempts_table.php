@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('quiz_id');
 
             $table->integer('score');
+            $table->decimal('accuracy', 5, 2);
             $table->integer('total_questions');
             $table->integer('correct_answers');
             $table->integer('time_seconds');

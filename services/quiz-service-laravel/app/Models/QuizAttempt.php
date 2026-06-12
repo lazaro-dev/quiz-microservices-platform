@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
     'quiz_id',
     'username',
     'score',
+    'accuracy',
     'total_questions',
     'correct_answers',
     'time_seconds'

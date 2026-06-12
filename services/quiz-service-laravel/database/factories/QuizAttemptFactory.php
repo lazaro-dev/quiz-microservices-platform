@@ -23,6 +23,7 @@ class QuizAttemptFactory extends Factory
             'user_id' => fake()->numberBetween(1, 999),
             'username' => fake()->username(),
             'score' => fake()->numberBetween(0, 100),
+            'accuracy' => fake()->numberBetween(0, 100),
             'correct_answers' => fake()->numberBetween(0, 10),
             'total_questions' => 10,
             'time_seconds' => fake()->numberBetween(10, 300),
