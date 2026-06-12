@@ -11,13 +11,14 @@ use Illuminate\Database\Eloquent\Model;
     'quiz_id',
     'question_text',
     'image_url',
-    'order'
+    'order',
+    'weight'
 ])]
 #[WithoutTimestamps]
 class Question extends Model
 {
     use HasFactory;
-    
+
     public function quiz()
     {
         return $this->belongsTo(Quiz::class);

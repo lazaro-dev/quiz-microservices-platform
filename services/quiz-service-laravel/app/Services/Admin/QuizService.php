@@ -131,7 +131,8 @@ class QuizService
                 'quiz_id' => $quiz->id,
                 'question_text' => $questionData['question_text'],
                 'image_url' => $questionData['image_url'] ?? null,
-                'order' => $questionData['order']
+                'order' => $questionData['order'],
+                'weight' => $questionData['weight']
             ]);
 
             foreach ($questionData['options'] as $optionData) {

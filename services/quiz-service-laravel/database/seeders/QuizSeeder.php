@@ -21,7 +21,7 @@ class QuizSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::factory(10)->create();
+        $users = collect([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
         $types = [
             'Soulslike',
@@ -86,16 +86,18 @@ class QuizSeeder extends Seeder
 
                     foreach ($users->random(3) as $user) {
                         Rating::create([
-                            'user_id' => $user->id,
+                            'user_id' => $user,
                             'quiz_id' => $quiz->id,
+                            'username' => "user_{$user}",
                             'rating' => rand(3, 5)
                         ]);
                     }
 
                     foreach ($users->random(2) as $user) {
                         Comment::create([
-                            'user_id' => $user->id,
+                            'user_id' => $user,
                             'quiz_id' => $quiz->id,
+                            'username' => "user_{$user}",
                             'content' => 'Muito bom esse quiz!'
                         ]);
                     }

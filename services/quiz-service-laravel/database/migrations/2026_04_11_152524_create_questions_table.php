@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('question_text');
             $table->string('image_url')->nullable();
             $table->integer('order');
+            $table->unsignedTinyInteger('weight')->default(1);
 
             $table->foreign('quiz_id')
                 ->references('id')
