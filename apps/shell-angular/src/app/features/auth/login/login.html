@@ -1,0 +1,37 @@
+<app-auth-layout>
+    <div class="mx-auto w-full max-w-md">
+
+        <app-ui-card>
+
+            <div class="mb-8">
+                <h2 class=" text-3xl font-bold">
+                    Entrar
+                </h2>
+
+                <p class="mt-2 text-sm" style="color: var(--color-text-muted)">
+                    Entre para continuar.
+                </p>
+            </div>
+
+            <form [formGroup]="form" (ngSubmit)="submit()" class=" flex flex-col gap-4">
+                <app-ui-input label="E-mail" formControlName="email" [control]="form.controls.email" />
+
+                <app-ui-input label="Senha" type="password" formControlName="password"
+                    [control]="form.controls.password" [showPasswordToggle]="true" />
+
+                <app-ui-button type="submit" variant="primary" [size]="'sm'" [loading]="loading()">
+                    Entrar
+                </app-ui-button>
+            </form>
+
+            <div class="mt-6 text-center text-sm cursor-pointer hover:underline" (click)="toRegister()">
+                Não possui conta?
+            </div>
+
+            <div class="mt-2 text-center text-sm cursor-pointer hover:underline" (click)="toForgotPassword()">
+                Esqueceu sua senha?
+            </div>
+
+        </app-ui-card>
+    </div>
+</app-auth-layout>
