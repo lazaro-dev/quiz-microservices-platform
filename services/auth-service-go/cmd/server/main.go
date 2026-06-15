@@ -25,9 +25,9 @@ func main() {
 
 	mux.HandleFunc("POST /auth/login", authHandler.Login)
 	mux.HandleFunc("POST /auth/register", authHandler.Register)
-	// mux.Handle("GET /auth/me",
-	// 	middleware.JWTMiddleware(jwtService, http.HandlerFunc(authHandler.Me)),
-	// )
+	mux.Handle("GET /auth/me",
+		middleware.JWTMiddleware(jwtService, http.HandlerFunc(authHandler.Me)),
+	)
 	mux.Handle("POST /auth/token/refresh",
 		middleware.JWTMiddleware(jwtService, http.HandlerFunc(tokenHandler.Refresh)),
 	)
@@ -36,5 +36,7 @@ func main() {
 		middleware.JWTMiddleware(jwtService, http.HandlerFunc(tokenHandler.Validate)),
 	)
 
-	http.ListenAndServe(":8080", mux)
+	handler := middleware.CORSMiddleware(mux)
+
+	http.ListenAndServe(":8080", handler)
 }
