@@ -1,0 +1,34 @@
+<div class="min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="w-full max-w-6xl grid lg:grid-cols-2 gap-12 items-center">
+        <section class=" hidden lg:flex flex-col gap-6
+            ">
+            <div>
+                <h1 class=" text-5xl font-bold">
+                    Quiz Platform
+                </h1>
+
+                <p class=" mt-4 text-lg" style="color: var(--color-text-muted)">
+                    Crie quizzes, desafie amigos e acompanhe seu progresso.
+                </p>
+            </div>
+
+            <div class=" grid gap-4">
+                <div class="feature-card">
+                    🎯 Jogue quizzes personalizados
+                </div>
+
+                <div class="feature-card">
+                    🏆 Sistema de ranking
+                </div>
+
+                <div class="feature-card">
+                    👥 Compartilhe com amigos
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <ng-content />
+        </section>
+    </div>
+</div>
