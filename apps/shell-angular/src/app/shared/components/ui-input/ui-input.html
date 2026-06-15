@@ -1,0 +1,44 @@
+<div class="input-wrapper">
+
+    @if (label()) {
+
+    <label class="input-label">
+        {{ label() }}
+    </label>
+
+    }
+
+    <div class="input-container">
+
+        <input [class]="
+                'input input-' +
+                size() +
+                (errorMessage
+                    ? ' input-error-state'
+                    : '')
+            " [type]="inputType" [value]="value" [placeholder]="placeholder()" [disabled]="disabled"
+            (input)="handleInput($event)" (blur)="handleBlur()" />
+
+        @if (
+        type() === 'password' &&
+        showPasswordToggle()
+        ) {
+
+        <button type="button" class="password-toggle" (click)="togglePassword()">
+            {{ passwordVisible() ? 'Ocultar' : 'Mostrar' }}
+        </button>
+
+        }
+
+    </div>
+
+
+    @if (errorMessage) {
+
+    <span class="input-error">
+        {{ errorMessage }}
+    </span>
+
+    }
+
+</div>
