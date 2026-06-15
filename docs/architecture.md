@@ -1,17 +1,23 @@
-Frontend (Vue / Flutter / Angular)
+┌─────────────────────┐
+│  Shell Angular      │
+└──────────┬──────────┘
            │
-           ▼
-       API Gateway
+           ├─────────────► Player Angular
            │
- ┌─────────┼─────────┐
- │         │         │
-Auth      Quiz      User
- (Go)   (Laravel)  (Spring)
-           │
-           ▼
-        RabbitMQ
-           │
- ┌─────────┴─────────┐
- │                   │
-Stats             Notifications
-(Node)              (Python)
+           └─────────────► Admin Vue
+
+                    │
+                    ▼
+
+             API Gateway
+
+                    │
+
+      ┌─────────────┼─────────────┐
+      ▼             ▼             ▼
+
+ Auth Service  User Service  Quiz Service
+      │
+      ▼
+
+Realtime Service
