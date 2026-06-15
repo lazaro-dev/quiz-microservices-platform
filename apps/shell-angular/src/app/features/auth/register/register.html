@@ -1,0 +1,35 @@
+<app-auth-layout>
+
+    <app-ui-card>
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold">
+                Criar Conta
+            </h2>
+
+            <p class="mt-2 text-sm" style="color: var(--color-text-muted)">
+                Crie sua conta para começar.
+            </p>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4">
+            <app-ui-input label="Usuário" formControlName="username" [control]="form.controls.username" />
+
+            <app-ui-input label="E-mail" type="email" formControlName="email" [control]="form.controls.email" />
+
+            <app-ui-input label="Senha" type="password" [showPasswordToggle]="true" formControlName="password"
+                [control]="form.controls.password" />
+
+            <app-ui-input label="Confirmar senha" type="password" [showPasswordToggle]="true"
+                formControlName="confirmPassword" [control]="form.controls.confirmPassword" />
+
+            <app-ui-button type="submit" [loading]="loading()">
+                Criar Conta
+            </app-ui-button>
+
+            <div class="mt-2 text-center text-sm cursor-pointer hover:underline" (click)="toLogin()">
+                Já possui conta?
+            </div>
+        </form>
+    </app-ui-card>
+
+</app-auth-layout>
