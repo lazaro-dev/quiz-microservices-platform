@@ -1,0 +1,87 @@
+<app-player-layout>
+    <main class="mx-auto max-w-7xl px-4 py-8 lg:px-8">
+
+        <section class="relative overflow-hidden rounded-3xl p-6 sm:p-8 lg:p-16 mb-10" style="background:
+        linear-gradient(
+            135deg,
+            var(--color-primary),
+            #6366f1
+        );
+    ">
+
+            <div class="max-w-2xl">
+
+                <span class="inline-flex rounded-full bg-white/15 px-4 py-2 text-sm text-white">
+                    🚀 Mais de 1.000 quizzes
+                </span>
+
+                <h1 class="mt-6 text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight">
+                    Teste seus conhecimentos
+                </h1>
+
+                <p class="mt-4 text-base sm:text-lg text-white/80">
+                    Jogue quizzes, dispute rankings
+                    e descubra novos desafios.
+                </p>
+
+                <div class="mt-8 flex gap-3 flex-col md:flex-row">
+
+                    <input placeholder="Pesquisar quiz..."
+                        class="flex-1 rounded-xl bg-white px-4 py-3 text-sm sm:text-base outline-none" />
+
+                    <button
+                        class="h-12 px-6 rounded-xl bg-white font-semibold text-indigo-600 transition-all hover:scale-105 hover:shadow-lg cursor-pointer">
+                        Explorar
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-8">
+            <h1 class="text-2xl sm:text-3xl font-bold" style="color: var(--color-text)">
+                Descubra novos quizzes
+            </h1>
+
+            <p class="mt-2" style="color: var(--color-text-muted)">
+                Jogue, dispute rankings e desafie amigos.
+            </p>
+        </section>
+
+        <div class="mb-10 py-2 flex gap-3 overflow-x-auto">
+            @for (category of categories(); track category) {
+
+            <button
+                class="shrink-0 rounded-xl px-5 py-3 text-sm font-medium transition-all hover:scale-105 hover:shadow-lg cursor-pointer border border-stone-200"
+                style="
+                    background: var(--color-surface);
+                    color: var(--color-text);
+                ">
+                {{ category }}
+            </button>
+
+            }
+
+        </div>
+
+        <div class="grid gap-8">
+            <div class="mb-6 flex items-center justify-between">
+                <h2 class="text-2xl font-bold">
+                    Em destaque
+                </h2>
+            </div>
+
+            <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                @for (quiz of quizzes(); track quiz.id) {
+
+                <app-quiz-card [quiz]="quiz" />
+
+                }
+            </div>
+
+            <aside>
+                <app-leaderboard-card [players]="leaderboard()" />
+            </aside>
+        </div>
+
+    </main>
+</app-player-layout>
