@@ -1,0 +1,41 @@
+<div class="
+        sticky
+        top-6
+        rounded-2xl
+        border
+        p-5
+    " style="
+        border-color: var(--color-border);
+        background: var(--color-surface);
+    ">
+
+    <h3 class="
+            mb-4
+            text-lg
+            font-semibold
+        " style="color: var(--color-text)">
+        Ranking Global
+    </h3>
+
+    <div class="flex flex-col gap-3">
+
+        @for (player of players(); track player.position) {
+        <div class="
+                    flex
+                    items-center
+                    justify-between
+                ">
+            <span>
+                #{{ player.position }}
+                {{ player.username }}
+            </span>
+
+            <span style="
+                        color: var(--color-primary)
+                    ">
+                {{ player.score }}
+            </span>
+        </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,63 @@
+<div class="
+        group
+        overflow-hidden
+        rounded-2xl
+        border
+        transition-all
+        duration-300
+        hover:-translate-y-1
+        hover:shadow-xl
+        cursor-pointer
+    " style="
+        border-color: var(--color-border);
+        background: var(--color-surface);
+    " (click)="toQuiz(quiz().slug)">
+
+    <div class="
+            h-36
+            bg-gradient-to-br
+            from-indigo-500
+            to-indigo-700
+        ">
+    </div>
+
+    <div class="p-5">
+
+        <span class="
+                text-xs
+                font-semibold
+                uppercase
+            " style="
+                color: var(--color-primary);
+            ">
+            {{ quiz().category }}
+        </span>
+
+        <h3 class="
+                mt-2
+                text-lg
+                font-bold
+            ">
+            {{ quiz().title }}
+        </h3>
+
+        <div class="
+                mt-4
+                flex
+                justify-between
+                text-sm
+            " style="
+                color: var(--color-text-muted);
+            ">
+            <span>
+                {{ quiz().questions }} questões
+            </span>
+
+            <span>
+                {{ quiz().plays }} partidas
+            </span>
+        </div>
+
+    </div>
+
+</div>

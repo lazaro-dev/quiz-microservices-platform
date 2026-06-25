@@ -1,0 +1,43 @@
+<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+    <div class="rounded-2xl p-4" style="background: var(--color-background);">
+        <p class="text-sm" style="color: var(--color-text-muted);">
+            Perguntas
+        </p>
+
+        <p class="mt-1 text-2xl font-bold">
+            {{ questionsCount }}
+        </p>
+    </div>
+
+    <div class="rounded-2xl p-4" style="background: var(--color-background);">
+        <p class="text-sm" style="color: var(--color-text-muted);">
+            Partidas
+        </p>
+
+        <p class="mt-1 text-2xl font-bold">
+            {{ totalPlays }}
+        </p>
+    </div>
+
+    <div class="rounded-2xl p-4" style="background: var(--color-background);">
+        <p class="text-sm" style="color: var(--color-text-muted);">
+            Média
+        </p>
+
+        <p class="mt-1 text-2xl font-bold">
+            {{ averageScore }}%
+        </p>
+    </div>
+
+    <div class="rounded-2xl p-4" style="background: var(--color-background);">
+        <p class="text-sm" style="color: var(--color-text-muted);">
+            Tempo Médio
+        </p>
+
+        <p class="mt-1 text-2xl font-bold">
+            {{ estimatedDuration }} min
+        </p>
+    </div>
+
+</div>
