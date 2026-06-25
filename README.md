@@ -1,133 +1,185 @@
-# Quiz Microservices Platform
+🧩 Quiz Microservices Platform
 
-Projeto de estudo focado em arquitetura de microserviços.
+Plataforma de quizzes construída como projeto de estudo focado em arquitetura de microserviços, comunicação assíncrona e sistemas distribuídos.
 
-## Tecnologias
+O objetivo do projeto é explorar, na prática, padrões modernos de backend, integração entre serviços e escalabilidade.
 
-* Go
-* Laravel
-* Spring Boot
-* Node.js
-* Python
-* Redis
-* RabbitMQ
-* PostgreSQL
-* Docker
-* Nginx
+🧠 Arquitetura
 
-## Arquitetura
+O sistema é composto por múltiplos serviços independentes, comunicando-se através de HTTP, mensageria e cache distribuído.
 
-Frontend → API Gateway → Microservices
+---
 
-## Infraestrutura
+## ⚙️ Serviços
 
-* Redis (cache)
-* RabbitMQ (mensageria)
-* PostgreSQL (database)
-* Nginx (API Gateway)
+### 🔐 Auth Service (Go)
+- Autenticação JWT
+- Validação de token
+- Integração com User Service
 
+### 👤 User Service (Spring Boot)
+- Gestão de usuários
+- Persistência no PostgreSQL
+- Camada de domínio independente
 
-#Start projeto
---Lembrete para adicionar ao final
-Caso erro de arquivo .sh não encontrado ao executar o docker-compose, trocar CRLF por LF do arquivo
+### 🧩 Quiz Service (Laravel)
+- Criação e gerenciamento de quizzes
+- Estrutura de perguntas e respostas
+- Regras de negócio da aplicação
 
-APP_ENV=testing php artisan test
- 
- 
-#add futuramente melhor explanado
+### ⚡ Realtime Service (Node.js)
+- WebSockets
+- Ranking de pontuações
+- Comunicação em tempo real
+- Integração com Redis e RabbitMQ
 
-Arquitetura de Micro Frontends utilizando Module Federation.
+### 🌐 API Gateway (Nginx)
+- Roteamento de requisições
+- Ponto único de entrada do sistema
+- Proxy reverso para microserviços
 
-Shell host em Angular.
+---
 
-Aplicação do jogador em Angular.
+## 🧱 Infraestrutura
 
-Aplicação administrativa em Vue 3.
+- 🐘 PostgreSQL → banco principal  
+- 🧠 Redis → cache e comunicação rápida  
+- 📩 RabbitMQ → mensageria assíncrona  
+- 🌐 Nginx → API Gateway  
+- 🧪 Adminer → interface para banco de dados (Apenas em desenvolvimento)
 
-Integração transparente entre frameworks.
+---
 
-Backend baseado em microserviços (Go, Spring Boot, Laravel e Node.js).
+## 🐳 Como executar o projeto
 
+### Pré-requisitos
+- Docker
+- Docker Compose
 
-#Shell (Angular Host)
+### Subir o ambiente
 
-Responsabilidades:
+## 🚀 Inicialização do ambiente
 
-Carregar os MFEs
-Controlar autenticação
-Redirecionamentos
-Guards de rota
-Layout base (se necessário)
+### 1. Subir infraestrutura e backends
 
-Não contém regras de negócio de Quiz.
+```bash
+./dev.sh -u
+```
 
-├── login
-├── register
-├── forgot-password
-└── federation config
+### 2. Iniciar o Shell Frontend
 
+```bash
+cd apps/shell-angular
+npm install
+npm start
+```
 
-#Player (Angular Remote)
+### 3. Iniciar o Player Frontend
 
-Responsável pela experiência do jogador.
+```bash
+cd apps/player-angular
+npm install
+npm start
+```
 
-/
-├── Home
-├── Buscar Quiz
-├── Categorias
-├── Ranking
-├── Perfil Público
-├── Detalhe do Quiz
-└── Sobre
+### 4. Acessar a aplicação
 
-Áreas protegidas dentro do Player
-/profile
-/play/:slug
-/favorites
-/history
-/my-quizzes
-/create-quiz
-/edit-quiz/:id
-
-
-#Admin (Vue Remote)
-
-Responsável pela gestão da plataforma.
-
-/admin
-├── Dashboard
-├── Users
-├── Quizzes
-├── Categories
-├── Reports
-└── Settings
-
-#Comunicação
-Autenticação
-
-Fluxo:
-
-Player/Admin
-      │
-      ▼
-API Gateway
-      │
-      ▼
-Auth Service
+```text
+http://localhost:4200
+```
 
 
+> O Shell carrega dinamicamente o Player através de Module Federation.
 
-Tailwind
-├── Layout
-├── Espaçamento
-├── Grid
-├── Flex
-├── Responsividade
-└── Animações simples
 
-SCSS Variables
-├── Cores
-├── Radius
-├── Sombras
-├── Temas
-└── Tokens visuais
+### Derrubar os containers
+
+```bash
+./dev.sh -d
+```
+
+### Derrubar os containers e remover volumes
+
+```bash
+./dev.sh -dv
+```
+
+### Executar testes
+
+```bash
+./dev.sh -t
+```
+
+### Build de um serviço específico
+
+```bash
+./dev.sh -b auth-service
+```
+
+### Build sem cache
+
+```bash
+./dev.sh -bnc auth-service
+```
+
+
+### 🖥️ Shell Frontend (Angular)
+
+- Aplicação host dos Micro Frontends
+- Responsável pelo roteamento principal
+- Carregamento dinâmico dos módulos remotos
+- Autenticação
+
+### 🎮 Player Frontend (Angular)
+
+- Micro Frontend independente
+- Responsável pela experiência de jogo/quizzes
+- Integrado ao Shell via Module Federation
+
+### 🔐 Admin (Vue)
+
+- Micro Frontend independente
+- Responsável pelo gerenciamento de quizzes
+- Integrado ao Shell via Module Federation
+
+
+| Serviço | Tecnologia |
+|----------|------------|
+| Auth Service | Go |
+| User Service | Spring Boot |
+| Quiz Service | Laravel |
+| Realtime Service | Node.js |
+| Gateway | Nginx |
+| Cache | Redis |
+| Mensageria | RabbitMQ |
+| Banco | PostgreSQL |
+
+## 🧑‍💻 Stack
+
+### Frontend
+- Angular/Vue
+- Module Federation
+- Micro Frontends
+
+### Backend
+- Go
+- Spring Boot
+- Laravel
+- Node.js
+
+### Infraestrutura
+- Docker
+- Nginx
+- RabbitMQ
+- Redis
+- PostgreSQL
+
+Este projeto foi construído como laboratório para estudo de arquitetura de software distribuído, com foco em aprendizado prático e exploração de tecnologias reais usadas em sistemas escaláveis.
+
+⭐ Se gostou
+
+Se quiser acompanhar a evolução, estou documentando o projeto e posso compartilhar decisões de arquitetura, desafios e melhorias ao longo do desenvolvimento.
+
+🔗 Repositório
+
+https://github.com/lazaro-dev/quiz-microservices-platform
