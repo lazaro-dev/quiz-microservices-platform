@@ -51,7 +51,9 @@
                 "output": "."
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles.scss"
+            ],
             "main": "src/main.ts",
             "outputPath": "dist/shell-angular",
             "index": "src\\index.html",

@@ -13,7 +13,7 @@
       ],
       "@features/*": [
         "./src/app/features/*"
-      ]
+      ],
     },
     "strict": true,
     "noImplicitOverride": true,

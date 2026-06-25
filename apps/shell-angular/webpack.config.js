@@ -3,7 +3,7 @@ const {
   withModuleFederationPlugin,
 } = require('@angular-architects/module-federation/webpack');
 
-module.exports = withModuleFederationPlugin({
+const mfConfig = withModuleFederationPlugin({
   // name: 'shell-angular',
 
   // exposes: {
@@ -18,3 +18,14 @@ module.exports = withModuleFederationPlugin({
     ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto' }),
   },
 });
+
+module.exports = {
+  ...mfConfig,
+  watchOptions: {
+    ignored: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.angular/**'
+    ]
+  }
+};
