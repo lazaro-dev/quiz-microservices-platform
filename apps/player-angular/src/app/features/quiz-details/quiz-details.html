@@ -1,0 +1,11 @@
+<app-player-layout>
+
+    @if(!loading()) {
+
+    <app-quiz-hero [quiz]="quiz()" (startQuiz)="startQuiz()" (favorite)="toggleFavorite()" />
+
+    <section class="mt-8">
+        <app-leaderboard-card [players]="leaderboard()" />
+    </section>
+    }
+</app-player-layout>
