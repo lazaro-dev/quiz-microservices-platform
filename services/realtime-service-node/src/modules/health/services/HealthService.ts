@@ -15,7 +15,6 @@ export class HealthService {
 
         try {
             await this.redis.getInstance().ping();
-
             redisStatus = "UP";
         } catch { }
 

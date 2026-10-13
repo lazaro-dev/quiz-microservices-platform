@@ -37,15 +37,6 @@ export class SocketServer {
         );
     }
 
-    // const socket = io(
-    //     "http://localhost:8080",
-    //     {
-    //         auth: {
-    //             token: accessToken
-    //         }
-    //     }
-    // );
-
     public getIO(): Server {
         return this.io;
     }

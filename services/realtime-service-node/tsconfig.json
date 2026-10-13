@@ -12,9 +12,6 @@
     "paths": {
       "@/*": ["./src/*"],
       "@config/*": ["./src/config/*"],
-      "@websocket/*": ["./src/websocket/*"],
-      "@rabbitmq/*": ["./src/rabbitmq/*"],
-      "@redis/*": ["./src/redis/*"],
       "@modules/*": ["./src/modules/*"],
       "@shared/*": ["./src/shared/*"]
     },

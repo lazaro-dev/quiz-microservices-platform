@@ -9,8 +9,6 @@ export class Application {
     public async bootstrap(): Promise<void> {
         const redis = new RedisClient();
 
-        // await redis.connect();
-
         const rabbit = new RabbitMQClient();
 
         await rabbit.connect();
