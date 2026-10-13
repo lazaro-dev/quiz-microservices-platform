@@ -10,7 +10,6 @@
     ">
 
             <div class="max-w-2xl">
-
                 <span class="inline-flex rounded-full bg-white/15 px-4 py-2 text-sm text-white">
                     🚀 Mais de 1.000 quizzes
                 </span>
@@ -26,10 +25,11 @@
 
                 <div class="mt-8 flex gap-3 flex-col md:flex-row">
 
-                    <input placeholder="Pesquisar quiz..."
-                        class="flex-1 rounded-xl bg-white px-4 py-3 text-sm sm:text-base outline-none" />
+                    <input #searchInput placeholder="Pesquisar quiz..."
+                        class="flex-1 rounded-xl bg-white px-4 py-3 text-sm sm:text-base outline-none"
+                        (keyup.enter)="search(searchInput.value)" />
 
-                    <button
+                    <button (click)="search(searchInput.value)"
                         class="h-12 px-6 rounded-xl bg-white font-semibold text-indigo-600 transition-all hover:scale-105 hover:shadow-lg cursor-pointer">
                         Explorar
                     </button>
@@ -48,18 +48,34 @@
         </section>
 
         <div class="mb-10 py-2 flex gap-3 overflow-x-auto">
-            @for (category of categories(); track category) {
+            @for (category of categories(); track category.id) {
 
-            <button
+            <button (click)="selectCategory(category.id)"
                 class="shrink-0 rounded-xl px-5 py-3 text-sm font-medium transition-all hover:scale-105 hover:shadow-lg cursor-pointer border border-stone-200"
                 style="
                     background: var(--color-surface);
                     color: var(--color-text);
                 ">
-                {{ category }}
+                {{ category.name }}
             </button>
 
             }
+
+        </div>
+
+        <div class="mb-10 flex gap-3 flex-wrap">
+
+            <button (click)="selectDifficulty('easy')" class="rounded-xl border px-5 py-2 cursor-pointer">
+                Fácil
+            </button>
+
+            <button (click)="selectDifficulty('medium')" class="rounded-xl border px-5 py-2 cursor-pointer">
+                Médio
+            </button>
+
+            <button (click)="selectDifficulty('hard')" class="rounded-xl border px-5 py-2 cursor-pointer">
+                Difícil
+            </button>
 
         </div>
 
@@ -82,6 +98,37 @@
                 <app-leaderboard-card [players]="leaderboard()" />
             </aside>
         </div>
+
+        @if(hasMore()) {
+
+        <div class="mt-8">
+
+            <button (click)="loadMore()" class="
+            w-full
+            rounded-xl
+            py-4
+            font-semibold
+            cursor-pointer
+        " style="
+            background: var(--color-primary);
+            color: white;
+        ">
+
+                @if(loading()) {
+
+                Carregando...
+
+                } @else {
+
+                Carregar mais quizzes
+
+                }
+
+            </button>
+
+        </div>
+
+        }
 
     </main>
 </app-player-layout>

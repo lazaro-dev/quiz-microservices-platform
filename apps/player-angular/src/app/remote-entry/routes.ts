@@ -12,6 +12,15 @@ export const routes: Routes = [
             import('../features/quiz-details/quiz-details')
                 .then(m => m.QuizDetails),
     },
+    {
+        path: 'quiz/:slug/play',
+        loadComponent: () => import('../features/quiz-play/quiz-play')
+            .then(m => m.QuizPlay),
+    },
+    // {
+    //     path: 'quiz/:slug/result/:attemptId',
+    //     component: QuizResult,
+    // },
     // {
     //     path: 'perfil',
     //     loadComponent: () =>

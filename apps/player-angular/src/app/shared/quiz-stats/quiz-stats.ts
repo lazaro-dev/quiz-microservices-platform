@@ -9,6 +9,6 @@ import { Component, Input } from '@angular/core';
 export class QuizStats {
     @Input() questionsCount = 0;
     @Input() totalPlays = 0;
-    @Input() averageScore = 0;
-    @Input() estimatedDuration = 0;
+    @Input() averageRating = 0;
+    @Input() totalRatings = 0;
 }
