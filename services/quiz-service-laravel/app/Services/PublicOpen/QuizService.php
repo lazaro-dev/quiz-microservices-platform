@@ -10,6 +10,8 @@ class QuizService
     public function index(QuizIndexDTO $dto)
     {
         return Quiz::query()
+            ->withCount(['questions', 'attempts'])
+            ->with('game:id,name,slug')
             ->when(
                 $dto->game_id,
                 fn($q) =>
@@ -24,15 +26,19 @@ class QuizService
                 $dto->search,
                 fn($q) =>
                 $q->where('title', 'like', "%{$dto->search}%")
+                    ->orWhere('description', 'like', "%{$dto->search}%")
             )
             ->where('is_published', true)
-            ->paginate();
+            ->paginate($dto->per_page, ['*'], 'page', $dto->page);
     }
 
-    public function show($id)
+    public function show(string $slug)
     {
-        return Quiz::with('game')
+        return Quiz::query()
+            ->with('game')
+            ->withCount(['questions', 'attempts'])
             ->where('is_published', true)
-            ->findOrFail($id);
+            ->where('slug', $slug)
+            ->firstOrFail();
     }
 }

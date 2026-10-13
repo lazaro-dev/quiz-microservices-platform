@@ -7,15 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-// Route::prefix('quizzes')->group(function () {
-//     Route::get('/health', function () {
-//         return response()->json([
-//             'status' => 'ok',
-//             'service' => 'quiz-service'
-//         ]);
-//     });
-// });
-
 Route::group(['prefix' => 'quizzes'], function () {
 
     // Route::get('/me', function (Request $request) {
@@ -33,7 +24,7 @@ Route::group(['prefix' => 'quizzes'], function () {
         Route::get('/games', [PublicOpen\GameController::class, 'index']);
         Route::get('/games/{slug}', [PublicOpen\GameController::class, 'show']);
         Route::get('/quizzes', [PublicOpen\QuizController::class, 'index']);
-        Route::get('/quizzes/{id}', [PublicOpen\QuizController::class, 'show']);
+        Route::get('/quizzes/{slug}', [PublicOpen\QuizController::class, 'show']);
     });
 
     Route::group(['middleware' => ['jwt'], 'prefix' => 'common'], function () {

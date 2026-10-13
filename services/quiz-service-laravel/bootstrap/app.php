@@ -21,6 +21,10 @@ use Symfony\Component\HttpKernel\Exception\{
 if (!function_exists('makeHttpErrorResponse')) {
     function makeHttpErrorResponse(string|array $message, int $status): array
     {
+        if($status === 500) {
+            // dd($message);
+            $message = "Erro interno do servidor";
+        }
         return [
             [
                 "status" => $status,
@@ -57,7 +61,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 $e instanceof ValidationException => makeHttpErrorResponse(message: \optional($e)?->errors(), status: 422),
                 $e instanceof InvalidAnswerException => makeHttpErrorResponse(message: \optional($e)?->getMessage(), status: 422),
                 $e instanceof InvalidQuestionException => makeHttpErrorResponse(message: \optional($e)?->getMessage(), status: 422),
-                default => makeHttpErrorResponse(message: "Erro interno do servidor", status: 500),
+                default => makeHttpErrorResponse(message: $e?->getMessage(), status: 500),
             };
 
             return response()->json(...$error);

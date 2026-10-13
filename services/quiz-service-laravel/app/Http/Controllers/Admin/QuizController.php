@@ -10,6 +10,7 @@ use App\Models\Quiz;
 use App\Support\AuthUser;
 use App\Support\Policies\QuizAuthorization;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -55,11 +56,14 @@ class QuizController extends Controller
             throw new AccessDeniedHttpException('Ação não autorizada.');
         }
 
-        $result = $this->quizService->store(
-            QuizSaveDTO::fromArray([
-                'created_by' => AuthUser::id(),
-                ...$request->validated()
-            ])
+        $result = DB::transaction(
+            fn($request) =>
+            $this->quizService->store(
+                QuizSaveDTO::fromArray([
+                    'created_by' => AuthUser::id(),
+                    ...$request->validated()
+                ])
+            )
         );
 
         return response()->json($result, 201);
@@ -74,12 +78,15 @@ class QuizController extends Controller
             throw new AccessDeniedHttpException('Ação não autorizada.');
         }
 
-        return $this->quizService->update(
-            $quiz->id,
-            QuizSaveDTO::fromArray([
-                'created_by' => $quiz->created_by,
-                ...$request->validated()
-            ])
+        return DB::transaction(
+            fn($request) =>
+            $this->quizService->update(
+                $quiz->id,
+                QuizSaveDTO::fromArray([
+                    'created_by' => $quiz->created_by,
+                    ...$request->validated()
+                ])
+            )
         );
     }
 

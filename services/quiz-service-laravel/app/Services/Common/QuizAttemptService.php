@@ -13,6 +13,7 @@ use App\Models\QuizAttempt;
 use App\Support\AuthUser;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class QuizAttemptService
 {
@@ -27,7 +28,7 @@ class QuizAttemptService
 
 
         if ($questions->isEmpty()) {
-            throw new \Exception(
+            throw new BadRequestHttpException(
                 'Quiz sem perguntas'
             );
         }

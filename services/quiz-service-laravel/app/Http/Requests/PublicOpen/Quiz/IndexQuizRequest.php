@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\PublicOpen\Quiz;
 
+use App\Enums\Difficulty;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class IndexQuizRequest extends FormRequest
 {
@@ -24,7 +26,7 @@ class IndexQuizRequest extends FormRequest
     {
         return [
             'game_id' => 'nullable|int',
-            'difficulty' => 'nullable|int',
+            'difficulty' => ['nullable','string', Rule::in(Difficulty::getValues())],
             'search' => 'nullable|string',
         ];
     }

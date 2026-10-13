@@ -5,6 +5,8 @@ namespace App\Http\Controllers\PublicOpen;
 use App\DTO\PublicOpen\QuizIndexDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PublicOpen\Quiz\IndexQuizRequest;
+use App\Http\Resources\PublicQuizDetailResource;
+use App\Http\Resources\PublicQuizResource;
 use App\Services\PublicOpen\QuizService;
 use App\Models\Quiz;
 
@@ -14,13 +16,21 @@ class QuizController extends Controller
 
     public function index(IndexQuizRequest $request)
     {
-        return $this->quizService->index(QuizIndexDTO::fromArray($request->validated()));
+        return PublicQuizResource::collection(
+            $this->quizService->index(QuizIndexDTO::fromArray(
+                [
+                    ...$request->validated(),
+                    "page" => $request?->page,
+                    "per_page" => $request?->per_page
+                ]
+            ))
+        );
     }
 
-    public function show(int $id)
+    public function show(string $slug)
     {
-        return Quiz::with('game')
-            ->where('is_published', true)
-            ->findOrFail($id);
+        return new PublicQuizDetailResource(
+            $this->quizService->show($slug)
+        );
     }
 }
