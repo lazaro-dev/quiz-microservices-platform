@@ -49,7 +49,7 @@ func (j *JWTService) GenerateRefreshToken(tokenString string) (string, error) {
 	token, err := jwtLib.Parse(tokenString, func(token *jwtLib.Token) (interface{}, error) {
 
 		if _, ok := token.Method.(*jwtLib.SigningMethodHMAC); !ok {
-			return nil, errors.New("Assinatura de inválida")
+			return nil, errors.New("Assinatura inválida")
 		}
 
 		return []byte(j.secret), nil
@@ -85,7 +85,7 @@ func (j *JWTService) ValidateToken(tokenString string) (*Claims, error) {
 	token, err := jwtLib.Parse(tokenString, func(token *jwtLib.Token) (interface{}, error) {
 
 		if _, ok := token.Method.(*jwtLib.SigningMethodHMAC); !ok {
-			return nil, errors.New("Assinatura de inválida")
+			return nil, errors.New("Assinatura inválida")
 		}
 
 		return []byte(j.secret), nil

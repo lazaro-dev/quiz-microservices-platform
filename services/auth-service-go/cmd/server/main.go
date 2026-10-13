@@ -28,9 +28,7 @@ func main() {
 	mux.Handle("GET /auth/me",
 		middleware.JWTMiddleware(jwtService, http.HandlerFunc(authHandler.Me)),
 	)
-	mux.Handle("POST /auth/token/refresh",
-		middleware.JWTMiddleware(jwtService, http.HandlerFunc(tokenHandler.Refresh)),
-	)
+	mux.HandleFunc("POST /auth/token/refresh", http.HandlerFunc(tokenHandler.Refresh))
 
 	mux.Handle("POST /auth/token/validate",
 		middleware.JWTMiddleware(jwtService, http.HandlerFunc(tokenHandler.Validate)),
